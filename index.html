@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mapa Notarías</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([20.6767, -103.3475], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var notarias = [
+      {
+        nombre: "NOTARÍA No. 1 GUADALAJARA",
+        titular: "LIC. JOSÉ LUIS GUTIÉRREZ V.",
+        direccion: "AV. AMERICAS NO. 1000, COL. PROVIDENCIA",
+        lat: 20.6993, lon: -103.3700,
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=Notaría+No.+1+GUADALAJARA"
+      },
+      {
+        nombre: "NOTARÍA No. 2 GUADALAJARA",
+        titular: "LIC. GENARO ÁLVAREZ DEL TORO",
+        direccion: "AV. MÉXICO NO. 3370 PISO 6-A, COL. MONRAZ",
+        lat: 20.6898, lon: -103.3990,
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=Notaría+No.+2+GUADALAJARA&entry.1436506627=LIC.+GENARO+ÁLVAREZ+DEL+TORO&entry.1876891050=AV.+MÉXICO+NO.+3370+PISO+6-A,+COL.+MONRAZ"
+      }
+    ];
+
+    notarias.forEach(function(n) {
+      L.marker([n.lat, n.lon]).addTo(map)
+        .bindPopup(`<b>${n.nombre}</b><br>${n.titular}<br>${n.direccion}<br><a href="${n.url}" target="_blank">Registrar visita</a>`);
+    });
+  </script>
+</body>
+</html>
