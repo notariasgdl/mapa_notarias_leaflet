@@ -1,45 +1,102 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa Notarías</title>
+  <title>Mapa Notarías Jalisco</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; }
+    #map { height: 100vh; width: 100vw; margin: 0; padding: 0; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    var map = L.map('map').setView([20.6767, -103.3475], 12);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var map = L.map('map').setView([20.676, -103.347], 12);
 
-    var notarias = [
-      {
-        nombre: "NOTARÍA No. 1 GUADALAJARA",
-        titular: "LIC. JOSÉ LUIS GUTIÉRREZ V.",
-        direccion: "AV. AMERICAS NO. 1000, COL. PROVIDENCIA",
-        lat: 20.6993, lon: -103.3700,
-        url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=Notaría+No.+1+GUADALAJARA"
-      },
-      {
-        nombre: "NOTARÍA No. 2 GUADALAJARA",
-        titular: "LIC. GENARO ÁLVAREZ DEL TORO",
-        direccion: "AV. MÉXICO NO. 3370 PISO 6-A, COL. MONRAZ",
-        lat: 20.6898, lon: -103.3990,
-        url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=Notaría+No.+2+GUADALAJARA&entry.1436506627=LIC.+GENARO+ÁLVAREZ+DEL+TORO&entry.1876891050=AV.+MÉXICO+NO.+3370+PISO+6-A,+COL.+MONRAZ"
-      }
-    ];
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
-    notarias.forEach(function(n) {
-      L.marker([n.lat, n.lon]).addTo(map)
-        .bindPopup(`<b>${n.nombre}</b><br>${n.titular}<br>${n.direccion}<br><a href="${n.url}" target="_blank">Registrar visita</a>`);
-    });
-  </script>
+var notarias = [
+  {
+    nombre: "NOTARÍA No. 1 GUADALAJARA",
+    titular: "LIC. GUILLERMO RENTERÍA GIL",
+    direccion: "AV. VALLARTA NO. 6503-7, CIUDAD GRANJA, ZAPOPAN, JALISCO",
+    lat: 20.675779, lon: -103.436934,
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=NOTARÍA+No.+1+GUADALAJARA"
+  },
+  {
+    nombre: "NOTARÍA No. 2 GUADALAJARA",
+    titular: "LIC. GENARO ÁLVAREZ DEL TORO",
+    direccion: "AV. MÉXICO NO. 3370 PISO 6-A, COL. MONRAZ, GUADALAJARA",
+    lat: 20.683412, lon: -103.379653,
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSddNyEv8WiEpwKCnMw2-BnV46XegFSONWygdk858E-k_moAmA/viewform?usp=pp_url&entry.1703342562=NOTARÍA+No.+2+GUADALAJARA"
+  },
+  {
+    nombre: "NOTARÍA No. 3 GUADALAJARA",
+    titular: "LIC. FELIPE VÁZQUEZ",
+    direccion: "GONZÁLEZ LUNA 2273, COL. AMERICANA, GUADALAJARA",
+    lat: 20.677610, lon: -103.369755,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 4 GUADALAJARA",
+    titular: "LIC. DIONISIO FLORES ÁGUILA",
+    direccion: "FRANCISCO ZARCO 2430, LADRON DE GUEVARA, GUADALAJARA",
+    lat: 20.683033, lon: -103.361722,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 5 GUADALAJARA",
+    titular: "LIC. ELÍAS ESTRADA LÓPEZ",
+    direccion: "AV. ACUEDUCTO 2100, COL. SAN JAVIER, GUADALAJARA",
+    lat: 20.712134, lon: -103.397308,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 6 GUADALAJARA",
+    titular: "LIC. JUAN LOMELÍ GARCÍA",
+    direccion: "PEDRO LOZA 330, ZONA CENTRO, GUADALAJARA",
+    lat: 20.676552, lon: -103.346398,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 7 GUADALAJARA",
+    titular: "LIC. CECILIA ODETTE ORTEGA HIJAR",
+    direccion: "CALDERÓN DE LA BARCA 122, ARCOS VALLARTA, GUADALAJARA",
+    lat: 20.675456, lon: -103.369120,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 8 GUADALAJARA",
+    titular: "LIC. CARLOS ENRIGUE ZULOAGA",
+    direccion: "SANTA MARÍA 2396, VALLARTA NORTE, GUADALAJARA",
+    lat: 20.674912, lon: -103.382113,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 9 GUADALAJARA",
+    titular: "LIC. FERNANDO LÓPEZ VERGARA",
+    direccion: "LERDO DE TEJADA 1964, AMERICANA, GUADALAJARA",
+    lat: 20.674303, lon: -103.368120,
+    url: "#"
+  },
+  {
+    nombre: "NOTARÍA No. 10 GUADALAJARA",
+    titular: "LIC. JESÚS MANZANARES LEJARAZU",
+    direccion: "MARSELLA 446, AMERICANA, GUADALAJARA",
+    lat: 20.673990, lon: -103.367034,
+    url: "#"
+  }
+];
+
+notarias.forEach(n => {
+  L.marker([n.lat, n.lon])
+    .addTo(map)
+    .bindPopup(`<b>${n.nombre}</b><br>${n.titular}<br>${n.direccion}<br><br><a href="${n.url}" target="_blank" style="color:blue;">📋 Registrar Visita</a>`);
+});
+</script>
 </body>
 </html>
