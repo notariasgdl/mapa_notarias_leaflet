@@ -2289,6 +2289,16 @@ var notarias = [
 
 // --- Fin de Datos ---
 
+<!-- Leaflet JS (Asegúrate que esto esté antes que el plugin y tu script) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet Control Search JS (Asegúrate que esto esté antes que tu script) -->
+<script src="https://unpkg.com/leaflet-control-search@3.0.9/dist/leaflet-control-search.min.js"></script>
+
+<!-- Tu script principal empieza aquí -->
+<script>
+  // (Aquí debería estar tu 'var notarias = [ ... ];' si no está antes)
+  // Si 'var notarias' ya está definido antes de este punto, está bien.
+
   // --- Inicialización del Mapa ---
   var map = L.map('map', {
       center: [20.676, -103.347], // Centro inicial (Guadalajara aprox.)
@@ -2341,6 +2351,7 @@ var notarias = [
   });
 
   // --- Configuración del Control de Búsqueda ---
+  // ESTA LÍNEA ES LA QUE DABA EL ERROR: Ahora debería funcionar porque los scripts anteriores ya cargaron L.Control.Search
   var searchControl = new L.Control.Search({
     layer: markersLayer,          // Capa donde buscar los marcadores
     propertyName: 'nombre',       // Propiedad del marcador a usar para la búsqueda
