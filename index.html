@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa Notarías Jalisco</title>
+  <title>Mapa Notarías Jalisco con Buscador</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,17 +11,56 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search@3.0.9/dist/leaflet-control-search.min.css" />
 
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
-    #map { height: 100%; width: 100%; } /* Ajustado para ocupar el body */
+    /* Estilos básicos para que el mapa ocupe toda la pantalla */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif; /* Añade una fuente base */
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
 
     /* Estilos opcionales para el buscador */
     .leaflet-control-search .search-input {
-      max-width: 300px; /* O el ancho que prefieras */
+      max-width: 300px; /* Ancho del campo de búsqueda */
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      padding: 5px 8px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
     }
     .leaflet-control-search .search-tip {
-      white-space: nowrap; /* Evita que el texto del resultado se rompa */
+      /* Estilo de los resultados en la lista desplegable */
+      white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis; /* Añade '...' si el texto es muy largo */
+      text-overflow: ellipsis;
+      padding: 4px 6px;
+    }
+    .leaflet-control-search a.search-cancel {
+        margin-top: 4px; /* Ajuste visual del botón 'x' */
+    }
+    /* Estilo para el popup */
+    .leaflet-popup-content-wrapper {
+      border-radius: 5px;
+    }
+    .leaflet-popup-content {
+        margin: 13px 19px;
+        line-height: 1.4;
+    }
+    .leaflet-popup-content b {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+    }
+    .leaflet-popup-content a {
+        color: #0078A8;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .leaflet-popup-content a:hover {
+        text-decoration: underline;
     }
   </style>
 </head>
@@ -35,9 +74,7 @@
 <script src="https://unpkg.com/leaflet-control-search@3.0.9/dist/leaflet-control-search.min.js"></script>
 
 <script>
-  // --- Datos de Notarías ---
-  // Es buena práctica mover esto a un archivo .js separado (ej. notarias-data.js)
-  // y luego incluirlo con <script src="notarias-data.js"></script> 
+  // --- Datos Completos de Notarías ---
 
 var notarias = [
   {
@@ -2252,64 +2289,86 @@ var notarias = [
 
 // --- Fin de Datos ---
 
-  // Inicializar el mapa
-  var map = L.map('map').setView([20.676, -103.347], 10); // Ajusta el zoom inicial si es necesario
+  // --- Inicialización del Mapa ---
+  var map = L.map('map', {
+      center: [20.676, -103.347], // Centro inicial (Guadalajara aprox.)
+      zoom: 11,                  // Zoom inicial (puedes ajustarlo)
+      minZoom: 7,                  // Zoom mínimo permitido
+      maxZoom: 18                  // Zoom máximo permitido
+  });
 
-  // Añadir capa base de OpenStreetMap
+  // --- Capa Base (Tiles) ---
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  // Crear una capa de grupo para los marcadores (necesario para el buscador)
+  // --- Capa para los Marcadores (FeatureGroup) ---
+  // Usamos FeatureGroup porque Control.Search funciona bien con él.
   var markersLayer = L.featureGroup().addTo(map);
 
-  // Añadir marcadores al mapa y a la capa de grupo
+  // --- Añadir Marcadores al Mapa ---
   notarias.forEach(n => {
-    // Validar que tengamos latitud y longitud
-    if (n.lat && n.lon) {
-      // Crear contenido del Popup
-      var popupContent = `<b>${n.nombre}</b><br>`;
-      if (n.titular) popupContent += `${n.titular}<br>`; // Añadir titular si existe
-      popupContent += `${n.direccion}<br><br>`;
-      popupContent += `<a href="${n.url}" target="_blank" style="color:blue; text-decoration: none;">📋 Registrar Visita</a>`;
+    // Validar que tengamos latitud y longitud válidas
+    if (n.lat != null && n.lon != null && !isNaN(n.lat) && !isNaN(n.lon)) {
+      try {
+          // Construir el contenido del Popup
+          var popupContent = `<b>${n.nombre || 'Nombre no disponible'}</b><br>`;
+          if (n.titular) {
+              popupContent += `${n.titular}<br>`;
+          }
+          popupContent += `${n.direccion || 'Dirección no disponible'}<br><br>`;
+          popupContent += `<a href="${n.url}" target="_blank">📋 Registrar Visita</a>`;
 
-      // Crear el marcador y añadirle las propiedades que queremos buscar/mostrar
-      var marker = L.marker([n.lat, n.lon], {
-          // Estas propiedades se usarán para la búsqueda
-          nombre: n.nombre,
-          titular: n.titular || '', // Asegura que exista la propiedad aunque esté vacía
-          direccion: n.direccion
-      })
-      .bindPopup(popupContent);
+          // Crear el marcador y añadirle propiedades personalizadas para la búsqueda
+          var marker = L.marker([n.lat, n.lon], {
+              // Estas propiedades serán accesibles por el plugin de búsqueda
+              nombre: n.nombre || '',
+              titular: n.titular || '',
+              direccion: n.direccion || ''
+          })
+          .bindPopup(popupContent);
 
-      // Añadir el marcador a la capa de grupo
-      marker.addTo(markersLayer);
+          // Añadir el marcador a la capa de grupo (no directamente al mapa)
+          marker.addTo(markersLayer);
+
+      } catch (e) {
+           console.error("Error creando marcador para:", n.nombre, e); // Captura errores específicos al crear marcador
+      }
     } else {
-      console.warn("Notaría sin coordenadas válidas:", n.nombre); // Avisa si una notaría no tiene coords
+      // Avisar en la consola si una notaría no tiene coordenadas válidas
+      console.warn("Notaría omitida por coordenadas inválidas o nulas:", n.nombre);
     }
   });
 
-  // --- Configuración del Buscador ---
+  // --- Configuración del Control de Búsqueda ---
   var searchControl = new L.Control.Search({
-    layer: markersLayer,         // Capa donde buscar (nuestro grupo de marcadores)
-    propertyName: 'nombre',      // Propiedad del marcador para buscar (¡importante!)
-    marker: false,               // No crear un marcador nuevo al encontrar, solo ir al existente
-    initial: false,              // No activar la búsqueda al inicio
-    zoom: 16,                    // Zoom al encontrar un resultado
-    textPlaceholder: 'Buscar Notaría por Nombre...', // Texto de ayuda en el campo
-    // Opcional: Buscar también por titular (requiere ajustar propertyName o usar filterData)
-    // propertyName: ['nombre', 'titular'], // Buscaría en ambas propiedades (menos preciso a veces)
-    // position: 'topright',      // Cambiar posición del control si se desea
-    // buildTip: function(text, val) { // Personalizar cómo se muestra el resultado en la lista
-		// 	  var name = val.layer.options.nombre;
-    //     var titular = val.layer.options.titular;
-    //     return `<div class='search-tip'><b>${name}</b><br><small>${titular || ''}</small></div>`;
-		// }
+    layer: markersLayer,          // Capa donde buscar los marcadores
+    propertyName: 'nombre',       // Propiedad del marcador a usar para la búsqueda
+    marker: false,                // No crear un marcador temporal al encontrar (solo ir al existente)
+    moveToLocation: function(latlng, title, map) {
+        // Función personalizada para centrar y hacer zoom al encontrar
+        map.setView(latlng, 16); // Centra y establece zoom 16
+    },
+    initial: false,               // No activar la búsqueda al cargar la página
+    zoom: 16,                     // Zoom por defecto si no se usa moveToLocation (redundante pero no daña)
+    textPlaceholder: 'Buscar Notaría por Nombre...', // Texto de ayuda
+    textErr: 'Notaría no encontrada', // Mensaje si no hay resultados
+    autoCollapse: true,           // Cierra la lista de resultados después de seleccionar
+    autoType: false,              // No empezar a buscar mientras se escribe (espera Enter o clic)
+    minLength: 2                  // Mínimo de caracteres para empezar a buscar
   });
 
   // Añadir el control de búsqueda al mapa
   map.addControl(searchControl);
 
+  // --- Ajuste Opcional: Centrar el mapa en los marcadores si hay muchos ---
+  // Descomenta la siguiente línea si quieres que el mapa se ajuste automáticamente
+  // para mostrar todos los marcadores al inicio (puede ser útil si hay notarías muy dispersas)
+  // if (markersLayer.getLayers().length > 0) {
+  //   map.fitBounds(markersLayer.getBounds().pad(0.1)); // pad(0.1) añade un pequeño margen
+  // }
+
 </script>
+
 </body>
 </html>
