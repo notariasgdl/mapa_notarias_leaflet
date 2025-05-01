@@ -68,11 +68,12 @@
 
 <div id="map"></div>
 
-<!-- Leaflet JS -->
+<!-- Leaflet JS (Debe ir ANTES que el plugin y tu script) -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Leaflet Control Search JS -->
+<!-- Leaflet Control Search JS (Debe ir ANTES que tu script) -->
 <script src="https://unpkg.com/leaflet-control-search@3.0.9/dist/leaflet-control-search.min.js"></script>
 
+<!-- Tu script principal empieza aquí -->
 <script>
   // --- Datos Completos de Notarías ---
 
@@ -2287,36 +2288,34 @@ var notarias = [
   }
 ];
 
-// --- Fin de Datos ---
-
-<!-- Leaflet JS (Asegúrate que esto esté antes que el plugin y tu script) -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Leaflet Control Search JS (Asegúrate que esto esté antes que tu script) -->
-<script src="https://unpkg.com/leaflet-control-search@3.0.9/dist/leaflet-control-search.min.js"></script>
-
-<!-- Tu script principal empieza aquí -->
-<script>
-  // (Aquí debería estar tu 'var notarias = [ ... ];' si no está antes)
-  // Si 'var notarias' ya está definido antes de este punto, está bien.
+// --- Fin de Datos --- // (Puedes dejar o quitar este comentario)
 
   // --- Inicialización del Mapa ---
-  var map = L.map('map', {
-      center: [20.676, -103.347], // Centro inicial (Guadalajara aprox.)
-      zoom: 11,                  // Zoom inicial (puedes ajustarlo)
-      minZoom: 7,                  // Zoom mínimo permitido
-      maxZoom: 18                  // Zoom máximo permitido
-  });
+  // ESTA LÍNEA YA DEBERÍA ESTAR DEFINIDA ANTES EN TU SCRIPT SI SEGUISTE EL "INICIO"
+  // PERO LA DEJAMOS POR SI ACASO, AUNQUE PODRÍA SER REDUNDANTE. LO IMPORTANTE ES QUE 'map' EXISTA.
+  // SI ESTÁS 100% SEGURO QUE 'var map = L.map(...)' ESTÁ ANTES DEL ARRAY notarias, PUEDES BORRAR ESTA INICIALIZACIÓN.
+   var map = L.map('map', {
+       center: [20.676, -103.347], // Centro inicial (Guadalajara aprox.)
+       zoom: 11,                  // Zoom inicial (puedes ajustarlo)
+       minZoom: 7,                  // Zoom mínimo permitido
+       maxZoom: 18                  // Zoom máximo permitido
+   });
 
-  // --- Capa Base (Tiles) ---
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-  }).addTo(map);
+   // --- Capa Base (Tiles) ---
+   // Asegúrate de que esta línea solo esté UNA VEZ en todo tu script.
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+     attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+   }).addTo(map);
+
 
   // --- Capa para los Marcadores (FeatureGroup) ---
-  // Usamos FeatureGroup porque Control.Search funciona bien con él.
+  // ESTA LÍNEA TAMBIÉN DEBERÍA ESTAR YA DEFINIDA ANTES. SI ES ASÍ, BORRALA DE AQUÍ.
+  // SI NO, DÉJALA.
   var markersLayer = L.featureGroup().addTo(map);
 
+
   // --- Añadir Marcadores al Mapa ---
+  // ESTE BUCLE DEBE ESTAR DESPUÉS DE LA DEFINICIÓN DE 'notarias' y 'markersLayer'
   notarias.forEach(n => {
     // Validar que tengamos latitud y longitud válidas
     if (n.lat != null && n.lon != null && !isNaN(n.lat) && !isNaN(n.lon)) {
@@ -2351,7 +2350,6 @@ var notarias = [
   });
 
   // --- Configuración del Control de Búsqueda ---
-  // ESTA LÍNEA ES LA QUE DABA EL ERROR: Ahora debería funcionar porque los scripts anteriores ya cargaron L.Control.Search
   var searchControl = new L.Control.Search({
     layer: markersLayer,          // Capa donde buscar los marcadores
     propertyName: 'nombre',       // Propiedad del marcador a usar para la búsqueda
@@ -2379,7 +2377,7 @@ var notarias = [
   //   map.fitBounds(markersLayer.getBounds().pad(0.1)); // pad(0.1) añade un pequeño margen
   // }
 
+// ESTAS LÍNEAS DEBEN ESTAR AL FINAL DE TU ARCHIVO HTML, CIERRAN EL SCRIPT Y EL BODY/HTML
 </script>
-
 </body>
 </html>
